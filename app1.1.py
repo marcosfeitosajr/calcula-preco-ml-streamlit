@@ -6,7 +6,7 @@ import pandas as pd
 import requests
 from bs4 import BeautifulSoup
 
-regras_frete = pd.read_csv(r'C:\Users\marcos.feitosa\Documents\Python Scripts\Calcula_preco_ml\TabelaFreteML.csv')
+#regras_frete = pd.read_csv(r'C:\Users\marcos.feitosa\Documents\Python Scripts\Calcula_preco_ml\TabelaFreteML.csv')
 
 # Estabelecendo tarifas e comissões
 #Comissão Mercado Livre Premium
