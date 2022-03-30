@@ -7,368 +7,367 @@ import requests
 from bs4 import BeautifulSoup
 
 headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36'}
-	page = requests.get('https://www.mercadolivre.com.br/ajuda/Custos-de-frete-gratis-pelo-Mercado-Envios_3362')
-	conteudo = page.content
+page = requests.get('https://www.mercadolivre.com.br/ajuda/Custos-de-frete-gratis-pelo-Mercado-Envios_3362')
+conteudo = page.content
 
-	soup = BeautifulSoup(conteudo, 'html.parser')
+soup = BeautifulSoup(conteudo, 'html.parser')
 
-	tabelas = soup.find_all('div', attrs={'class': 'faq-item__hidden-content'})
-
-
-
-	#Extraindo as tabelas
+tabelas = soup.find_all('div', attrs={'class': 'faq-item__hidden-content'})
 
 
-	# Gerando a série PESO
 
-	peso = []
+#Extraindo as tabelas
 
-	for i in range(16,206,10):
-		lista_peso = soup.find_all('td')[i].text
-		peso.append(lista_peso)
 
-	#1 Dividindo a série PESO em duas colunas: coluna 1 = peso_inicial
+# Gerando a série PESO
 
-	peso_inicial = []
+peso = []
 
-	for i in range(0,len(peso)):
+for i in range(16,206,10):
+	lista_peso = soup.find_all('td')[i].text
+	peso.append(lista_peso)
 
-		if i == 1:
-			b = peso[i].split()
-			c = b[1]
-			d = float(c)
+#1 Dividindo a série PESO em duas colunas: coluna 1 = peso_inicial
 
-		elif len(peso[i].split()) == 3:
-			c = 0
-			d = float(c)
+peso_inicial = []
 
-		elif len(peso[i].split()) == 4:
-			b = peso[18].split()
-			c = b[2]
-			d = float(c)
+for i in range(0,len(peso)):
 
-		elif len(peso[i].split()) == 5:
-			b = peso[i].split()
-			c = b[1] 
-			d = float(c)
+	if i == 1:
+		b = peso[i].split()
+		c = b[1]
+		d = float(c)
 
-		elif len(peso[i].split()) == 6:
-			b = peso[i].split()
-			c = b[1]
-			d = float(c)
+	elif len(peso[i].split()) == 3:
+		c = 0
+		d = float(c)
 
-		peso_inicial.append(d+0.001)
+	elif len(peso[i].split()) == 4:
+		b = peso[18].split()
+		c = b[2]
+		d = float(c)
+	elif len(peso[i].split()) == 5:
+		b = peso[i].split()
+		c = b[1] 
+		d = float(c)
+
+	elif len(peso[i].split()) == 6:
+		b = peso[i].split()
+		c = b[1]
+		d = float(c)
+
+	peso_inicial.append(d+0.001)
 	peso_inicial[0] = 0
 
-	#2 Dividindo a série PESO em duas colunas: coluna 2 = peso_final
+#2 Dividindo a série PESO em duas colunas: coluna 2 = peso_final
 
-	peso_final = []
+peso_final = []
 
-	for i in range(0,len(peso)):
+for i in range(0,len(peso)):
 
-		if len(peso[i].split()) == 3:
-			f = peso[i].split()
-			g = f[1] 
+	if len(peso[i].split()) == 3:
+		f = peso[i].split()
+		g = f[1] 
 
-		elif len(peso[i].split()) == 4:
-			g = '9999'
+	elif len(peso[i].split()) == 4:
+		g = '9999'
 
-		elif len(peso[i].split()) == 5:
-			f = peso[i].split()
-			g = f[3]  
+	elif len(peso[i].split()) == 5:
+		f = peso[i].split()
+		g = f[3]  
 
-		elif len(peso[i].split()) == 6:
-			f = peso[i].split()
-			g = f[4]
+	elif len(peso[i].split()) == 6:
+		f = peso[i].split()
+		g = f[4]
 
-		peso_final.append(g) 
+	peso_final.append(g) 
 
 
-	#1 Gerando a coluna de menos de R$ 79 / Full / Sudeste
+#1 Gerando a coluna de menos de R$ 79 / Full / Sudeste
 
-	vsd_menos_de_79_full = []
+vsd_menos_de_79_full = []
 
-	for i in range(18,208,10):
+for i in range(18,208,10):
 
-		lista_menos_79 = str(soup.find_all('td')[i].get_text())[2:]
+	lista_menos_79 = str(soup.find_all('td')[i].get_text())[2:]
 
-		vsd_menos_de_79_full.append(lista_menos_79)
+	vsd_menos_de_79_full.append(lista_menos_79)
 
-	#2 Gerando a coluna de menos de R$ 79 / Outros / Sudeste
+#2 Gerando a coluna de menos de R$ 79 / Outros / Sudeste
 
-	vsd_menos_de_79_outros = []
+vsd_menos_de_79_outros = []
 
-	for i in range(19,209,10):
+for i in range(19,209,10):
 
-		lista_menos_79 = str(soup.find_all('td')[i].get_text())[2:]
+	lista_menos_79 = str(soup.find_all('td')[i].get_text())[2:]
 		 
-		vsd_menos_de_79_outros.append(lista_menos_79)
+	vsd_menos_de_79_outros.append(lista_menos_79)
 
-	#3 Gerando a coluna de > R$ 79 / Full / Sudeste
+#3 Gerando a coluna de > R$ 79 / Full / Sudeste
 
-	vsd_mais_de_79_full = []
+vsd_mais_de_79_full = []
 
-	for i in range(21,211,10):
+for i in range(21,211,10):
 
-		lista_mais_79 = str(soup.find_all('td')[i].get_text())[2:]
+	lista_mais_79 = str(soup.find_all('td')[i].get_text())[2:]
 		 
-		vsd_mais_de_79_full.append(lista_mais_79)
+	vsd_mais_de_79_full.append(lista_mais_79)
 
-	#4 Gerando a coluna de > R$ 79 Outros Sudeste
+#4 Gerando a coluna de > R$ 79 Outros Sudeste
 
-	vsd_mais_de_79_outros = []
+vsd_mais_de_79_outros = []
 
-	for i in range(22,212,10):
+for i in range(22,212,10):
 
-		lista_mais_79 = str(soup.find_all('td')[i].get_text())[2:]
+	lista_mais_79 = str(soup.find_all('td')[i].get_text())[2:]
 		 
-		vsd_mais_de_79_outros.append(lista_mais_79)
+	vsd_mais_de_79_outros.append(lista_mais_79)
 
-	#5 Gerando a coluna de Categorias especiais FULL Sudeste
+#5 Gerando a coluna de Categorias especiais FULL Sudeste
 
-	vsd_categorias_especiais_full = []
+vsd_categorias_especiais_full = []
 
-	for i in range(24,214,10):
+for i in range(24,214,10):
 
-		cat_especial_full = str(soup.find_all('td')[i].get_text())[2:]
+	cat_especial_full = str(soup.find_all('td')[i].get_text())[2:]
 		 
-		vsd_categorias_especiais_full.append(cat_especial_full)
+	vsd_categorias_especiais_full.append(cat_especial_full)
 
-	#6 Gerando a coluna de Categorias especiais Outros Sudeste
+#6 Gerando a coluna de Categorias especiais Outros Sudeste
 
-	vsd_categorias_especiais_outros = []
+vsd_categorias_especiais_outros = []
 
-	for i in range(25,215,10):
+for i in range(25,215,10):
 
-		cat_especial_outros = str(soup.find_all('td')[i].get_text())[2:]
+	cat_especial_outros = str(soup.find_all('td')[i].get_text())[2:]
 		 
-		vsd_categorias_especiais_outros.append(cat_especial_outros)
+	vsd_categorias_especiais_outros.append(cat_especial_outros)
 
-	#1 Gerando a coluna de menos de R$ 79 / Full / Restante do país
+#1 Gerando a coluna de menos de R$ 79 / Full / Restante do país
 
-	vrp_menos_de_79_full = []
+vrp_menos_de_79_full = []
 
-	for i in range(222,412,10):
+for i in range(222,412,10):
 
-		lista_menos_79 = str(soup.find_all('td')[i].get_text())[2:]
+	lista_menos_79 = str(soup.find_all('td')[i].get_text())[2:]
 
-		vrp_menos_de_79_full.append(lista_menos_79)
+	vrp_menos_de_79_full.append(lista_menos_79)
 
-	#2 Gerando a coluna de menos de R$ 79 / Outros / Restante do país
+#2 Gerando a coluna de menos de R$ 79 / Outros / Restante do país
 
-	vrp_menos_de_79_outros = []
+vrp_menos_de_79_outros = []
 
-	for i in range(223,413,10):
+for i in range(223,413,10):
 
-		lista_menos_79 = str(soup.find_all('td')[i].get_text())[2:]
+	lista_menos_79 = str(soup.find_all('td')[i].get_text())[2:]
 		 
-		vrp_menos_de_79_outros.append(lista_menos_79)
+	vrp_menos_de_79_outros.append(lista_menos_79)
 
-	#3 Gerando a coluna de > R$ 79 / Full / Restante do país
+#3 Gerando a coluna de > R$ 79 / Full / Restante do país
 
-	vrp_mais_de_79_full = []
+vrp_mais_de_79_full = []
 
-	for i in range(225,415,10):
+for i in range(225,415,10):
 
-		lista_mais_79 = str(soup.find_all('td')[i].get_text())[2:]
+	lista_mais_79 = str(soup.find_all('td')[i].get_text())[2:]
 		 
-		vrp_mais_de_79_full.append(lista_mais_79)
+	vrp_mais_de_79_full.append(lista_mais_79)
 
-	#4 Gerando a coluna de > R$ 79 Outros Restante do país
+#4 Gerando a coluna de > R$ 79 Outros Restante do país
 
-	vrp_mais_de_79_outros = []
+vrp_mais_de_79_outros = []
 
-	for i in range(226,416,10):
+for i in range(226,416,10):
 
-		lista_mais_79 = str(soup.find_all('td')[i].get_text())[2:]
+	lista_mais_79 = str(soup.find_all('td')[i].get_text())[2:]
 		 
-		vrp_mais_de_79_outros.append(lista_mais_79)
+	vrp_mais_de_79_outros.append(lista_mais_79)
 
-	#5 Gerando a coluna de Categorias especiais FULL Restante do país
+#5 Gerando a coluna de Categorias especiais FULL Restante do país
 
-	vrp_categorias_especiais_full = []
+vrp_categorias_especiais_full = []
 
-	for i in range(228,418,10):
+for i in range(228,418,10):
 
-		cat_especial_full = str(soup.find_all('td')[i].get_text())[2:]
+	cat_especial_full = str(soup.find_all('td')[i].get_text())[2:]
 		 
-		vrp_categorias_especiais_full.append(cat_especial_full)
+	vrp_categorias_especiais_full.append(cat_especial_full)
 
-	#6 Gerando a coluna de Categorias especiais Outros Restante do país
+#6 Gerando a coluna de Categorias especiais Outros Restante do país
 
-	vrp_categorias_especiais_outros = []
+vrp_categorias_especiais_outros = []
 
-	for i in range(229,419,10):
+for i in range(229,419,10):
 
-		cat_especial_outros = str(soup.find_all('td')[i].get_text())[2:]
+	cat_especial_outros = str(soup.find_all('td')[i].get_text())[2:]
 		 
-		vrp_categorias_especiais_outros.append(cat_especial_outros)
+	vrp_categorias_especiais_outros.append(cat_especial_outros)
 
-	#1 Gerando a coluna de menos de R$ 79 / Full / Sudeste
-	asd_menos_de_79_full = []
+#1 Gerando a coluna de menos de R$ 79 / Full / Sudeste
+asd_menos_de_79_full = []
 
-	for i in range(428,618,10):
+for i in range(428,618,10):
 
-		lista_menos_79 = str(soup.find_all('td')[i].get_text())[2:]
+	lista_menos_79 = str(soup.find_all('td')[i].get_text())[2:]
 
-		asd_menos_de_79_full.append(lista_menos_79)
+	asd_menos_de_79_full.append(lista_menos_79)
 
-	#2 Gerando a coluna de menos de R$ 79 / Outros / Sudeste
+#2 Gerando a coluna de menos de R$ 79 / Outros / Sudeste
 
-	asd_menos_de_79_outros = []
+asd_menos_de_79_outros = []
 
-	for i in range(429,619,10):
+for i in range(429,619,10):
 
-		lista_menos_79 = str(soup.find_all('td')[i].get_text())[2:]
+	lista_menos_79 = str(soup.find_all('td')[i].get_text())[2:]
 		 
-		asd_menos_de_79_outros.append(lista_menos_79)
+	asd_menos_de_79_outros.append(lista_menos_79)
 
-	#3 Gerando a coluna de > R$ 79 / Full / Sudeste
+#3 Gerando a coluna de > R$ 79 / Full / Sudeste
 
-	asd_mais_de_79_full = []
+asd_mais_de_79_full = []
 
-	for i in range(431,621,10):
+for i in range(431,621,10):
 
-		lista_mais_79 = str(soup.find_all('td')[i].get_text())[2:]
+	lista_mais_79 = str(soup.find_all('td')[i].get_text())[2:]
 		 
-		asd_mais_de_79_full.append(lista_mais_79)
+	asd_mais_de_79_full.append(lista_mais_79)
 
-	#4 Gerando a coluna de > R$ 79 Outros Sudeste
+#4 Gerando a coluna de > R$ 79 Outros Sudeste
 
-	asd_mais_de_79_outros = []
+asd_mais_de_79_outros = []
 
-	for i in range(432,622,10):
+for i in range(432,622,10):
 
-		lista_mais_79 = str(soup.find_all('td')[i].get_text())[2:]
+	lista_mais_79 = str(soup.find_all('td')[i].get_text())[2:]
 		 
-		asd_mais_de_79_outros.append(lista_mais_79)
+	asd_mais_de_79_outros.append(lista_mais_79)
 
-	#5 Gerando a coluna de Categorias especiais FULL Sudeste
+#5 Gerando a coluna de Categorias especiais FULL Sudeste
 
-	asd_categorias_especiais_full = []
+asd_categorias_especiais_full = []
 
-	for i in range(434,624,10):
+for i in range(434,624,10):
 
-		cat_especial_full = str(soup.find_all('td')[i].get_text())[2:]
+	cat_especial_full = str(soup.find_all('td')[i].get_text())[2:]
 		 
-		asd_categorias_especiais_full.append(cat_especial_full)
+	asd_categorias_especiais_full.append(cat_especial_full)
 
-	#6 Gerando a coluna de Categorias especiais Outros Sudeste
+#6 Gerando a coluna de Categorias especiais Outros Sudeste
 
-	asd_categorias_especiais_outros = []
+asd_categorias_especiais_outros = []
 
-	for i in range(435,625,10):
+for i in range(435,625,10):
 
-		cat_especial_outros = str(soup.find_all('td')[i].get_text())[2:]
+	cat_especial_outros = str(soup.find_all('td')[i].get_text())[2:]
 		 
-		asd_categorias_especiais_outros.append(cat_especial_outros)
+	asd_categorias_especiais_outros.append(cat_especial_outros)
 
-	#1 Gerando a coluna de menos de R$ 79 / Full / Restante do país
+#1 Gerando a coluna de menos de R$ 79 / Full / Restante do país
 
-	arp_menos_de_79_full = []
+arp_menos_de_79_full = []
 
-	for i in range(632,822,10):
+for i in range(632,822,10):
 
-		lista_menos_79 = str(soup.find_all('td')[i].get_text())[2:]
+	lista_menos_79 = str(soup.find_all('td')[i].get_text())[2:]
 
-		arp_menos_de_79_full.append(lista_menos_79)
+	arp_menos_de_79_full.append(lista_menos_79)
 
-	#2 Gerando a coluna de menos de R$ 79 / Outros / Restante do país
-	arp_menos_de_79_outros = []
+#2 Gerando a coluna de menos de R$ 79 / Outros / Restante do país
+arp_menos_de_79_outros = []
 
-	for i in range(633,823,10):
+for i in range(633,823,10):
 
-		lista_menos_79 = str(soup.find_all('td')[i].get_text())[2:]
+	lista_menos_79 = str(soup.find_all('td')[i].get_text())[2:]
 		 
-		arp_menos_de_79_outros.append(lista_menos_79)
+	arp_menos_de_79_outros.append(lista_menos_79)
 
-	#3 Gerando a coluna de > R$ 79 / Full / Restante do país
+#3 Gerando a coluna de > R$ 79 / Full / Restante do país
 
-	arp_mais_de_79_full = []
+arp_mais_de_79_full = []
 
-	for i in range(635,825,10):
+for i in range(635,825,10):
 
-		lista_mais_79 = str(soup.find_all('td')[i].get_text())[2:]
+	lista_mais_79 = str(soup.find_all('td')[i].get_text())[2:]
 		 
-		arp_mais_de_79_full.append(lista_mais_79)
+	arp_mais_de_79_full.append(lista_mais_79)
 
-	#4 Gerando a coluna de > R$ 79 Outros Restante do país
+#4 Gerando a coluna de > R$ 79 Outros Restante do país
 
-	arp_mais_de_79_outros = []
+arp_mais_de_79_outros = []
 
-	for i in range(636,826,10):
+for i in range(636,826,10):
 
-		lista_mais_79 = str(soup.find_all('td')[i].get_text())[2:]
+	lista_mais_79 = str(soup.find_all('td')[i].get_text())[2:]
 		 
-		arp_mais_de_79_outros.append(lista_mais_79)
+	arp_mais_de_79_outros.append(lista_mais_79)
 
-	#5 Gerando a coluna de Categorias especiais FULL Restante do país
+#5 Gerando a coluna de Categorias especiais FULL Restante do país
 
-	arp_categorias_especiais_full = []
+arp_categorias_especiais_full = []
 
-	for i in range(638,828,10):
+for i in range(638,828,10):
 
-		cat_especial_full = str(soup.find_all('td')[i].get_text())[2:]
+	cat_especial_full = str(soup.find_all('td')[i].get_text())[2:]
 		 
-		arp_categorias_especiais_full.append(cat_especial_full)
+	arp_categorias_especiais_full.append(cat_especial_full)
 
 
-	#6 Gerando a coluna de Categorias especiais Outros Restante do país
+#6 Gerando a coluna de Categorias especiais Outros Restante do país
 
-	arp_categorias_especiais_outros = []
+arp_categorias_especiais_outros = []
 
-	for i in range(639,829,10):
+for i in range(639,829,10):
 
-		cat_especial_outros = str(soup.find_all('td')[i].get_text())[2:]
+	cat_especial_outros = str(soup.find_all('td')[i].get_text())[2:]
 		 
-		arp_categorias_especiais_outros.append(cat_especial_outros)
+	arp_categorias_especiais_outros.append(cat_especial_outros)
 
-	#1 Gerando a coluna Full / Sudeste
+#1 Gerando a coluna Full / Sudeste
 
-	rsd_full = []
+rsd_full = []
 
-	for i in range(829,905,4):
+for i in range(829,905,4):
 
-		lista_menos_79 = str(soup.find_all('td')[i].get_text())[2:]
+	lista_menos_79 = str(soup.find_all('td')[i].get_text())[2:]
 
-		rsd_full.append(lista_menos_79)
+	rsd_full.append(lista_menos_79)
 
-	#2 Gerando a coluna Outros / Sudeste
+#2 Gerando a coluna Outros / Sudeste
 
-	rsd_outros = []
+rsd_outros = []
 
-	for i in range(830,906,4):
+for i in range(830,906,4):
 
-		lista_menos_79 = str(soup.find_all('td')[i].get_text())[2:]
+	lista_menos_79 = str(soup.find_all('td')[i].get_text())[2:]
 
-		rsd_outros.append(lista_menos_79)
+	rsd_outros.append(lista_menos_79)
 
-	#1 Gerando a coluna Full / Restante do País
+#1 Gerando a coluna Full / Restante do País
 
-	rrp_full = []
+rrp_full = []
 
-	for i in range(911,987,4):
+for i in range(911,987,4):
 
-		lista_menos_79 = str(soup.find_all('td')[i].get_text())[2:]
+	lista_menos_79 = str(soup.find_all('td')[i].get_text())[2:]
 
-		rrp_full.append(lista_menos_79)
-
-
-	#2 Gerando a coluna Outros / Restante do País
-
-	rrp_outros = []
-
-	for i in range(912,988,4):
-
-		lista_menos_79 = str(soup.find_all('td')[i].get_text())[2:]
-
-		rrp_outros.append(lista_menos_79)
+	rrp_full.append(lista_menos_79)
 
 
+#2 Gerando a coluna Outros / Restante do País
 
-	# Criando o dataframe
+rrp_outros = []
 
-	dicionário = {
+for i in range(912,988,4):
+
+	lista_menos_79 = str(soup.find_all('td')[i].get_text())[2:]
+
+	rrp_outros.append(lista_menos_79)
+
+
+
+# Criando o dataframe
+
+dicionário = {
 	    'peso faixa inicial' : peso_inicial,
 	    'Peso faixa final' : peso_final,
 	    'VSD Full abaixo R$ 79' : vsd_menos_de_79_full,
@@ -401,11 +400,11 @@ headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/
 	    'RRP Outros' : rrp_outros
 	}
 
-	regras_frete = pd.DataFrame(dicionário)
-	# Trocando as vírgulas por pontos
-	regras_frete = regras_frete.replace(',','.', regex=True)
-	# Alterando o tipo das colunas
-	regras_frete = regras_frete.astype({
+regras_frete = pd.DataFrame(dicionário)
+# Trocando as vírgulas por pontos
+regras_frete = regras_frete.replace(',','.', regex=True)
+# Alterando o tipo das colunas
+regras_frete = regras_frete.astype({
 	    'peso faixa inicial' : float,
 	    'Peso faixa final' : float,
 	    'VSD Full abaixo R$ 79' : float,
@@ -438,9 +437,9 @@ headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/
 	    'RRP Outros' : float
 	})
 
-	# Alterando o peso das células com gramas para quilos
-	regras_frete['Peso faixa final'][0] = regras_frete['Peso faixa final'][0] / 1000
-	regras_frete['peso faixa inicial'][1] = regras_frete['peso faixa inicial'][1] / 1000
+# Alterando o peso das células com gramas para quilos
+regras_frete['Peso faixa final'][0] = regras_frete['Peso faixa final'][0] / 1000
+regras_frete['peso faixa inicial'][1] = regras_frete['peso faixa inicial'][1] / 1000
 #regras_frete = pd.read_csv(r'C:\Users\marcos.feitosa\Documents\Python Scripts\Calcula_preco_ml\TabelaFreteML.csv')
 
 # Estabelecendo tarifas e comissões
