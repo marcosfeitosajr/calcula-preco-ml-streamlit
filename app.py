@@ -6,7 +6,442 @@ import pandas as pd
 import requests
 from bs4 import BeautifulSoup
 
-regras_frete = pd.read_csv(r'C:\Users\marcos.feitosa\Documents\Python Scripts\Calcula_preco_ml\TabelaFreteML.csv')
+headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36'}
+	page = requests.get('https://www.mercadolivre.com.br/ajuda/Custos-de-frete-gratis-pelo-Mercado-Envios_3362')
+	conteudo = page.content
+
+	soup = BeautifulSoup(conteudo, 'html.parser')
+
+	tabelas = soup.find_all('div', attrs={'class': 'faq-item__hidden-content'})
+
+
+
+	#Extraindo as tabelas
+
+
+	# Gerando a série PESO
+
+	peso = []
+
+	for i in range(16,206,10):
+		lista_peso = soup.find_all('td')[i].text
+		peso.append(lista_peso)
+
+	#1 Dividindo a série PESO em duas colunas: coluna 1 = peso_inicial
+
+	peso_inicial = []
+
+	for i in range(0,len(peso)):
+
+		if i == 1:
+			b = peso[i].split()
+			c = b[1]
+			d = float(c)
+
+		elif len(peso[i].split()) == 3:
+			c = 0
+			d = float(c)
+
+		elif len(peso[i].split()) == 4:
+			b = peso[18].split()
+			c = b[2]
+			d = float(c)
+
+		elif len(peso[i].split()) == 5:
+			b = peso[i].split()
+			c = b[1] 
+			d = float(c)
+
+		elif len(peso[i].split()) == 6:
+			b = peso[i].split()
+			c = b[1]
+			d = float(c)
+
+		peso_inicial.append(d+0.001)
+	peso_inicial[0] = 0
+
+	#2 Dividindo a série PESO em duas colunas: coluna 2 = peso_final
+
+	peso_final = []
+
+	for i in range(0,len(peso)):
+
+		if len(peso[i].split()) == 3:
+			f = peso[i].split()
+			g = f[1] 
+
+		elif len(peso[i].split()) == 4:
+			g = '9999'
+
+		elif len(peso[i].split()) == 5:
+			f = peso[i].split()
+			g = f[3]  
+
+		elif len(peso[i].split()) == 6:
+			f = peso[i].split()
+			g = f[4]
+
+		peso_final.append(g) 
+
+
+	#1 Gerando a coluna de menos de R$ 79 / Full / Sudeste
+
+	vsd_menos_de_79_full = []
+
+	for i in range(18,208,10):
+
+		lista_menos_79 = str(soup.find_all('td')[i].get_text())[2:]
+
+		vsd_menos_de_79_full.append(lista_menos_79)
+
+	#2 Gerando a coluna de menos de R$ 79 / Outros / Sudeste
+
+	vsd_menos_de_79_outros = []
+
+	for i in range(19,209,10):
+
+		lista_menos_79 = str(soup.find_all('td')[i].get_text())[2:]
+		 
+		vsd_menos_de_79_outros.append(lista_menos_79)
+
+	#3 Gerando a coluna de > R$ 79 / Full / Sudeste
+
+	vsd_mais_de_79_full = []
+
+	for i in range(21,211,10):
+
+		lista_mais_79 = str(soup.find_all('td')[i].get_text())[2:]
+		 
+		vsd_mais_de_79_full.append(lista_mais_79)
+
+	#4 Gerando a coluna de > R$ 79 Outros Sudeste
+
+	vsd_mais_de_79_outros = []
+
+	for i in range(22,212,10):
+
+		lista_mais_79 = str(soup.find_all('td')[i].get_text())[2:]
+		 
+		vsd_mais_de_79_outros.append(lista_mais_79)
+
+	#5 Gerando a coluna de Categorias especiais FULL Sudeste
+
+	vsd_categorias_especiais_full = []
+
+	for i in range(24,214,10):
+
+		cat_especial_full = str(soup.find_all('td')[i].get_text())[2:]
+		 
+		vsd_categorias_especiais_full.append(cat_especial_full)
+
+	#6 Gerando a coluna de Categorias especiais Outros Sudeste
+
+	vsd_categorias_especiais_outros = []
+
+	for i in range(25,215,10):
+
+		cat_especial_outros = str(soup.find_all('td')[i].get_text())[2:]
+		 
+		vsd_categorias_especiais_outros.append(cat_especial_outros)
+
+	#1 Gerando a coluna de menos de R$ 79 / Full / Restante do país
+
+	vrp_menos_de_79_full = []
+
+	for i in range(222,412,10):
+
+		lista_menos_79 = str(soup.find_all('td')[i].get_text())[2:]
+
+		vrp_menos_de_79_full.append(lista_menos_79)
+
+	#2 Gerando a coluna de menos de R$ 79 / Outros / Restante do país
+
+	vrp_menos_de_79_outros = []
+
+	for i in range(223,413,10):
+
+		lista_menos_79 = str(soup.find_all('td')[i].get_text())[2:]
+		 
+		vrp_menos_de_79_outros.append(lista_menos_79)
+
+	#3 Gerando a coluna de > R$ 79 / Full / Restante do país
+
+	vrp_mais_de_79_full = []
+
+	for i in range(225,415,10):
+
+		lista_mais_79 = str(soup.find_all('td')[i].get_text())[2:]
+		 
+		vrp_mais_de_79_full.append(lista_mais_79)
+
+	#4 Gerando a coluna de > R$ 79 Outros Restante do país
+
+	vrp_mais_de_79_outros = []
+
+	for i in range(226,416,10):
+
+		lista_mais_79 = str(soup.find_all('td')[i].get_text())[2:]
+		 
+		vrp_mais_de_79_outros.append(lista_mais_79)
+
+	#5 Gerando a coluna de Categorias especiais FULL Restante do país
+
+	vrp_categorias_especiais_full = []
+
+	for i in range(228,418,10):
+
+		cat_especial_full = str(soup.find_all('td')[i].get_text())[2:]
+		 
+		vrp_categorias_especiais_full.append(cat_especial_full)
+
+	#6 Gerando a coluna de Categorias especiais Outros Restante do país
+
+	vrp_categorias_especiais_outros = []
+
+	for i in range(229,419,10):
+
+		cat_especial_outros = str(soup.find_all('td')[i].get_text())[2:]
+		 
+		vrp_categorias_especiais_outros.append(cat_especial_outros)
+
+	#1 Gerando a coluna de menos de R$ 79 / Full / Sudeste
+	asd_menos_de_79_full = []
+
+	for i in range(428,618,10):
+
+		lista_menos_79 = str(soup.find_all('td')[i].get_text())[2:]
+
+		asd_menos_de_79_full.append(lista_menos_79)
+
+	#2 Gerando a coluna de menos de R$ 79 / Outros / Sudeste
+
+	asd_menos_de_79_outros = []
+
+	for i in range(429,619,10):
+
+		lista_menos_79 = str(soup.find_all('td')[i].get_text())[2:]
+		 
+		asd_menos_de_79_outros.append(lista_menos_79)
+
+	#3 Gerando a coluna de > R$ 79 / Full / Sudeste
+
+	asd_mais_de_79_full = []
+
+	for i in range(431,621,10):
+
+		lista_mais_79 = str(soup.find_all('td')[i].get_text())[2:]
+		 
+		asd_mais_de_79_full.append(lista_mais_79)
+
+	#4 Gerando a coluna de > R$ 79 Outros Sudeste
+
+	asd_mais_de_79_outros = []
+
+	for i in range(432,622,10):
+
+		lista_mais_79 = str(soup.find_all('td')[i].get_text())[2:]
+		 
+		asd_mais_de_79_outros.append(lista_mais_79)
+
+	#5 Gerando a coluna de Categorias especiais FULL Sudeste
+
+	asd_categorias_especiais_full = []
+
+	for i in range(434,624,10):
+
+		cat_especial_full = str(soup.find_all('td')[i].get_text())[2:]
+		 
+		asd_categorias_especiais_full.append(cat_especial_full)
+
+	#6 Gerando a coluna de Categorias especiais Outros Sudeste
+
+	asd_categorias_especiais_outros = []
+
+	for i in range(435,625,10):
+
+		cat_especial_outros = str(soup.find_all('td')[i].get_text())[2:]
+		 
+		asd_categorias_especiais_outros.append(cat_especial_outros)
+
+	#1 Gerando a coluna de menos de R$ 79 / Full / Restante do país
+
+	arp_menos_de_79_full = []
+
+	for i in range(632,822,10):
+
+		lista_menos_79 = str(soup.find_all('td')[i].get_text())[2:]
+
+		arp_menos_de_79_full.append(lista_menos_79)
+
+	#2 Gerando a coluna de menos de R$ 79 / Outros / Restante do país
+	arp_menos_de_79_outros = []
+
+	for i in range(633,823,10):
+
+		lista_menos_79 = str(soup.find_all('td')[i].get_text())[2:]
+		 
+		arp_menos_de_79_outros.append(lista_menos_79)
+
+	#3 Gerando a coluna de > R$ 79 / Full / Restante do país
+
+	arp_mais_de_79_full = []
+
+	for i in range(635,825,10):
+
+		lista_mais_79 = str(soup.find_all('td')[i].get_text())[2:]
+		 
+		arp_mais_de_79_full.append(lista_mais_79)
+
+	#4 Gerando a coluna de > R$ 79 Outros Restante do país
+
+	arp_mais_de_79_outros = []
+
+	for i in range(636,826,10):
+
+		lista_mais_79 = str(soup.find_all('td')[i].get_text())[2:]
+		 
+		arp_mais_de_79_outros.append(lista_mais_79)
+
+	#5 Gerando a coluna de Categorias especiais FULL Restante do país
+
+	arp_categorias_especiais_full = []
+
+	for i in range(638,828,10):
+
+		cat_especial_full = str(soup.find_all('td')[i].get_text())[2:]
+		 
+		arp_categorias_especiais_full.append(cat_especial_full)
+
+
+	#6 Gerando a coluna de Categorias especiais Outros Restante do país
+
+	arp_categorias_especiais_outros = []
+
+	for i in range(639,829,10):
+
+		cat_especial_outros = str(soup.find_all('td')[i].get_text())[2:]
+		 
+		arp_categorias_especiais_outros.append(cat_especial_outros)
+
+	#1 Gerando a coluna Full / Sudeste
+
+	rsd_full = []
+
+	for i in range(829,905,4):
+
+		lista_menos_79 = str(soup.find_all('td')[i].get_text())[2:]
+
+		rsd_full.append(lista_menos_79)
+
+	#2 Gerando a coluna Outros / Sudeste
+
+	rsd_outros = []
+
+	for i in range(830,906,4):
+
+		lista_menos_79 = str(soup.find_all('td')[i].get_text())[2:]
+
+		rsd_outros.append(lista_menos_79)
+
+	#1 Gerando a coluna Full / Restante do País
+
+	rrp_full = []
+
+	for i in range(911,987,4):
+
+		lista_menos_79 = str(soup.find_all('td')[i].get_text())[2:]
+
+		rrp_full.append(lista_menos_79)
+
+
+	#2 Gerando a coluna Outros / Restante do País
+
+	rrp_outros = []
+
+	for i in range(912,988,4):
+
+		lista_menos_79 = str(soup.find_all('td')[i].get_text())[2:]
+
+		rrp_outros.append(lista_menos_79)
+
+
+
+	# Criando o dataframe
+
+	dicionário = {
+	    'peso faixa inicial' : peso_inicial,
+	    'Peso faixa final' : peso_final,
+	    'VSD Full abaixo R$ 79' : vsd_menos_de_79_full,
+	    'VSD Outros abaixo R$ 79' : vsd_menos_de_79_outros,
+	    'VSD Full a partir R$ 79 com 50% desconto' : vsd_mais_de_79_full,
+	    'VSD Outros a partir R$ 79 com 50% desconto' : vsd_mais_de_79_outros,
+	    'VSD Categorias especiais 25% desconto FULL' : vsd_categorias_especiais_full,
+	    'VSD Categorias especiais 25% desconto outros' : vsd_categorias_especiais_outros,
+	    'VRP Full abaixo R$ 79' : vrp_menos_de_79_full,
+	    'VRP Outros abaixo R$ 79' : vrp_menos_de_79_outros,
+	    'VRP Full a partir R$ 79 com 50% desconto' : vrp_mais_de_79_full,
+	    'VRP Outros a partir R$ 79 com 50% desconto' : vrp_mais_de_79_outros,
+	    'VRP Categorias especiais 25% desconto FULL' : vrp_categorias_especiais_full,
+	    'VRP Categorias especiais 25% desconto outros' : vrp_categorias_especiais_outros,
+	    'ASD Full abaixo R$ 79' : asd_menos_de_79_full,
+	    'ASD Outros abaixo R$ 79' : asd_menos_de_79_outros,
+	    'ASD Full a partir R$ 79 com 50% desconto' : asd_mais_de_79_full,
+	    'ASD Outros a partir R$ 79 com 50% desconto' : asd_mais_de_79_outros,
+	    'ASD Categorias especiais 25% desconto FULL' : asd_categorias_especiais_full,
+	    'ASD Categorias especiais 25% desconto outros' : asd_categorias_especiais_outros,
+	    'ARP Full abaixo R$ 79' : arp_menos_de_79_full,
+	    'ARP Outros abaixo R$ 79' : arp_menos_de_79_outros,
+	    'ARP Full a partir R$ 79 com 50% desconto' : arp_mais_de_79_full,
+	    'ARP Outros a partir R$ 79 com 50% desconto' : arp_mais_de_79_outros,
+	    'ARP Categorias especiais 25% desconto FULL' : arp_categorias_especiais_full,
+	    'ARP Categorias especiais 25% desconto outros' : arp_categorias_especiais_outros,
+	    'RSD Full' : rsd_full,
+	    'RSD Outros' : rsd_outros,
+	    'RRP Full' : rrp_full,
+	    'RRP Outros' : rrp_outros
+	}
+
+	regras_frete = pd.DataFrame(dicionário)
+	# Trocando as vírgulas por pontos
+	regras_frete = regras_frete.replace(',','.', regex=True)
+	# Alterando o tipo das colunas
+	regras_frete = regras_frete.astype({
+	    'peso faixa inicial' : float,
+	    'Peso faixa final' : float,
+	    'VSD Full abaixo R$ 79' : float,
+	    'VSD Outros abaixo R$ 79' : float,
+	    'VSD Full a partir R$ 79 com 50% desconto' : float,
+	    'VSD Outros a partir R$ 79 com 50% desconto' : float,
+	    'VSD Categorias especiais 25% desconto FULL' : float,
+	    'VSD Categorias especiais 25% desconto outros' : float,
+	    'VRP Full abaixo R$ 79' : float,
+	    'VRP Outros abaixo R$ 79' : float,
+	    'VRP Full a partir R$ 79 com 50% desconto' : float,
+	    'VRP Outros a partir R$ 79 com 50% desconto' : float,
+	    'VRP Categorias especiais 25% desconto FULL' : float,
+	    'VRP Categorias especiais 25% desconto outros' : float,
+	    'ASD Full abaixo R$ 79' : float,
+	    'ASD Outros abaixo R$ 79' : float,
+	    'ASD Full a partir R$ 79 com 50% desconto' : float,
+	    'ASD Outros a partir R$ 79 com 50% desconto' : float,
+	    'ASD Categorias especiais 25% desconto FULL' : float,
+	    'ASD Categorias especiais 25% desconto outros' : float,
+	    'ARP Full abaixo R$ 79' : float,
+	    'ARP Outros abaixo R$ 79' : float,
+	    'ARP Full a partir R$ 79 com 50% desconto' : float,
+	    'ARP Outros a partir R$ 79 com 50% desconto' : float,
+	    'ARP Categorias especiais 25% desconto FULL' : float,
+	    'ARP Categorias especiais 25% desconto outros' : float,
+	    'RSD Full' : float,
+	    'RSD Outros' : float,
+	    'RRP Full' : float,
+	    'RRP Outros' : float
+	})
+
+	# Alterando o peso das células com gramas para quilos
+	regras_frete['Peso faixa final'][0] = regras_frete['Peso faixa final'][0] / 1000
+	regras_frete['peso faixa inicial'][1] = regras_frete['peso faixa inicial'][1] / 1000
+#regras_frete = pd.read_csv(r'C:\Users\marcos.feitosa\Documents\Python Scripts\Calcula_preco_ml\TabelaFreteML.csv')
 
 # Estabelecendo tarifas e comissões
 #Comissão Mercado Livre Premium
