@@ -972,7 +972,8 @@ if opcao == 'Modelo de cálculo 4':
 
 		if condicao == True:
 			custo_frete = webscraping()
-
+		else:
+			custo_frete = webscraping()
 	#Cálculo clássico
 		custos_seller = ((markup_geral - 1)/markup_geral)
 		custos_com_comissão = custos_seller + MLC
