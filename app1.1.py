@@ -484,7 +484,7 @@ preço_referencia = float(79)
 
 #Sidebar
 st.sidebar.title('Menu')
-opcao = st.sidebar.radio('Selecione uma página ou modelo de cálculo',['Modelo de cálculo 1','Modelo de cálculo 2','Modelo de cálculo 3','Modelo de cálculo 4','Modelo de cálculo 5'])
+opcao = st.sidebar.radio('Selecione uma página ou modelo de cálculo',['Instruções','Modelo de cálculo 1','Modelo de cálculo 2','Modelo de cálculo 3','Modelo de cálculo 4','Modelo de cálculo 5'])
 
 #Home
 if opcao == 'Instruções':
@@ -972,8 +972,9 @@ if opcao == 'Modelo de cálculo 4':
 
 		if condicao == True:
 			custo_frete = webscraping()
-#		else:
-#			custo_frete = webscraping()
+		else:
+			custo_frete = webscraping()
+
 	#Cálculo clássico
 		custos_seller = ((markup_geral - 1)/markup_geral)
 		custos_com_comissão = custos_seller + MLC
@@ -1237,3 +1238,6 @@ if opcao == 'Modelo de cálculo 5':
 
 		else:
 			st.error('Informe um valor de venda diferente de R$0,00 para o anúncio clássico e também para o premium.')
+
+
+
