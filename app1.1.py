@@ -484,7 +484,7 @@ preço_referencia = float(79)
 
 #Sidebar
 st.sidebar.title('Menu')
-opcao = st.sidebar.radio('Selecione uma página ou modelo de cálculo',['Instruções','Cálculo por valor de lucro','Cálculo por margem de lucro','Cálculo por markup sobre o custo do produto','Cálculo por makup geral ou custo operacional e margem líquida','Cálculo por preço de venda no ML'])
+opcao = st.sidebar.radio('Selecione uma página ou modelo de cálculo',['Instruções','Por valor de lucro','Por margem de lucro','Por markup sobre o custo','Por makup geral ou custo operacional e margem líquida','Por preço de venda no ML'])
 
 #Home
 if opcao == 'Instruções':
